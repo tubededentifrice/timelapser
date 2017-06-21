@@ -43,25 +43,51 @@ public class PictureTaker extends Observable {
             mCamera.setParameters(params);
             mCamera.startPreview(); //Commenting works in the emulator, not in actual phone
 
-            mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+            File imageFile = getNewImageFile();
+            try {
+                OutputStream out = new FileOutputStream(imageFile);
+                out.write(new byte[0]);
+                out.close();
+
+                setChanged();
+                notifyObservers(imageFile);
+            } catch (Exception e) { }
+
+            /*mCamera.takePicture(new Camera.ShutterCallback() {
+                @Override
+                public void onShutter() {
+                    disposeCamera();
+                }
+            }, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(byte[] data, Camera camera) {
-                    android.os.Debug.waitForDebugger();
+                    //mCamera.stopPreview();
+                    disposeCamera();
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    //mCamera.stopPreview();
+                    disposeCamera();
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
                     //mCamera.stopPreview();
                     disposeCamera();
 
-                    File imageFile=getNewImageFile();
+                    File imageFile = getNewImageFile();
                     try {
-                        OutputStream out=new FileOutputStream(imageFile);
+                        OutputStream out = new FileOutputStream(imageFile);
                         out.write(data);
                         out.close();
 
                         //
                         setChanged();
                         notifyObservers(imageFile);
-                    } catch(Exception e) { }
+                    } catch (Exception e) { }
                 }
-            });
+            });*/
         }
     }
 

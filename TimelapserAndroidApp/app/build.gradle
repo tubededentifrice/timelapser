@@ -28,8 +28,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     //https://github.com/fabian7593/MagicalCamera
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.frosquivel:magicalcamera:5.0.5'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
     testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

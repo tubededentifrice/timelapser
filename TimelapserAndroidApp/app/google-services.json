@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "663316281143",
+    "firebase_url": "https://timelapserandroidapp.firebaseio.com",
+    "project_id": "timelapserandroidapp",
+    "storage_bucket": "timelapserandroidapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663316281143:android:0ef564d5334a2a4a",
+        "android_client_info": {
+          "package_name": "com.courcelle.timelapser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663316281143-hfqen71902n6ctm33v813iuu8nkg2fni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.courcelle.timelapser",
+            "certificate_hash": "b36065727a20e4ae66e86cf631a04e6054afb525"
+          }
+        },
+        {
+          "client_id": "663316281143-f93ajgr1ccs8fc04a3lo89olb24gamfi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJArs7UidNJxhcz5mIbu4WBNu0qLXueYQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663316281143-f93ajgr1ccs8fc04a3lo89olb24gamfi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
