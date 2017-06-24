@@ -27,67 +27,51 @@ public class PictureTaker extends Observable {
                 mCamera.setPreviewTexture(new SurfaceTexture(10));
             } catch (IOException e) { }
 
-            Camera.Parameters params = mCamera.getParameters();
+            final Camera.Parameters params = mCamera.getParameters();
             final Camera.Size biggestPictureSize = getBiggestPictureSize(params);
             params.setPictureSize(biggestPictureSize.width, biggestPictureSize.height);
             params.setPreviewSize(640,480);
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            params.setPictureFormat(ImageFormat.JPEG);
-            params.setJpegQuality(80);
-            params.setAutoExposureLock(true);
-            params.setAutoWhiteBalanceLock(true);
-            params.setExposureCompensation(params.getMaxExposureCompensation());
-            params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_DAYLIGHT);
-            params.setSceneMode(Camera.Parameters.SCENE_MODE_LANDSCAPE);
-            params.setRotation(0);
-            mCamera.setParameters(params);
-            mCamera.startPreview(); //Commenting works in the emulator, not in actual phone
 
-            File imageFile = getNewImageFile();
-            try {
-                OutputStream out = new FileOutputStream(imageFile);
-                out.write(new byte[0]);
-                out.close();
-
-                setChanged();
-                notifyObservers(imageFile);
-            } catch (Exception e) { }
-
-            /*mCamera.takePicture(new Camera.ShutterCallback() {
+            PictureTakerParameters.retrieve(new GenericCallback<PictureTakerParameters>() {
                 @Override
-                public void onShutter() {
-                    disposeCamera();
-                }
-            }, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    //mCamera.stopPreview();
-                    disposeCamera();
-                }
-            }, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    //mCamera.stopPreview();
-                    disposeCamera();
-                }
-            }, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    //mCamera.stopPreview();
-                    disposeCamera();
-
-                    File imageFile = getNewImageFile();
+                public void onCallback(PictureTakerParameters pictureTakerParameters) {
+                    /*params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    params.setPictureFormat(ImageFormat.JPEG);
+                    params.setJpegQuality(80);
+                    //params.setAutoExposureLock(true);
+                    //params.setAutoWhiteBalanceLock(true);
+                    //params.setExposureCompensation(params.getMaxExposureCompensation()/4);
+                    params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_DAYLIGHT);
+                    params.setSceneMode(Camera.Parameters.SCENE_MODE_LANDSCAPE);
+                    params.setRotation(0);
+                    Log.i("Camera",params.flatten());*/
                     try {
-                        OutputStream out = new FileOutputStream(imageFile);
-                        out.write(data);
-                        out.close();
+                        pictureTakerParameters.apply(params);
+                        mCamera.setParameters(params);
+                        mCamera.startPreview(); //Commenting works in the emulator, not in actual phone
 
-                        //
-                        setChanged();
-                        notifyObservers(imageFile);
-                    } catch (Exception e) { }
+                        mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+                            @Override
+                            public void onPictureTaken(byte[] data, Camera camera) {
+                                //mCamera.stopPreview();
+                                disposeCamera();
+
+                                File imageFile = getNewImageFile();
+                                try {
+                                    OutputStream out = new FileOutputStream(imageFile);
+                                    out.write(data);
+                                    out.close();
+
+                                    setChanged();
+                                    notifyObservers(imageFile);
+                                } catch (Exception e) { }
+                            }
+                        });
+                    } catch(Exception e) {
+                        Log.e("PictureTaker",e.getMessage());
+                    }
                 }
-            });*/
+            });
         }
     }
 

@@ -3,16 +3,14 @@ package com.courcelle.timelapser;
 import android.app.IntentService;
 import android.app.Notification;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.v7.app.NotificationCompat;
-
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by tubed on 20/06/2017.
@@ -20,10 +18,11 @@ import java.util.Observer;
 
 public class BackgroundService extends IntentService implements Observer {
     private static int FOREGROUND_ID=1338;
-    private Messenger messenger = null;
+    private LocalBroadcastManager broadcaster;
 
     public BackgroundService() {
         super("BackgroundService");
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
     /**
@@ -36,40 +35,34 @@ public class BackgroundService extends IntentService implements Observer {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(FOREGROUND_ID,buildForegroundNotification());
+        onHandleIntent(intent);
+        return START_STICKY;
+    }
 
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            messenger = (Messenger) bundle.get("messenger");
-        }
-
-        PictureTaker pictureTaker=new PictureTaker();
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        final PictureTaker pictureTaker=new PictureTaker();
         pictureTaker.addObserver(this);
 
-        while(true) {
-            try {
-                while(true) {
-                    Thread.sleep(10*1000);
-                    pictureTaker.takePicture();
-                }
-            } catch (InterruptedException e) { }
-        }
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                pictureTaker.takePicture();
+            }
+        }, 0, 60*1000);
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if(messenger != null) {
+        if(broadcaster != null) {
             File imageFile=(File)arg;
-            Message msg = Message.obtain();
 
-            Bundle dataBundle=new Bundle();
-            dataBundle.putString("file",imageFile.getPath());
-            msg.setData(dataBundle);
-
-            try {
-                messenger.send(msg);
-            } catch (RemoteException e) { }
+            Intent intent = new Intent(MainActivity.PictureTakenIntentAction);
+            intent.putExtra("file", imageFile.getPath());
+            broadcaster.sendBroadcast(intent);
         }
     }
 
