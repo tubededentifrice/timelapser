@@ -16,5 +16,8 @@ public class FirebaseInstanceService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         //sendRegistrationToServer(refreshedToken);
+
+        // Make sure we are always subscribed to the relevant topics
+        MessagingService.subscribeRelevantTopics();
     }
 }

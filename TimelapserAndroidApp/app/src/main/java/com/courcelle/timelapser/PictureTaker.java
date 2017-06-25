@@ -1,10 +1,12 @@
 package com.courcelle.timelapser;
 
-import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.util.Log;
+
+import com.courcelle.timelapser.utils.FileUtils;
+import com.courcelle.timelapser.utils.GenericCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,77 +15,82 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Observable;
-
-/**
- * Created by tubed on 19/06/2017.
- */
 
 public class PictureTaker extends Observable {
     public void takePicture() {
+        PictureTakerParameters.retrieve(new GenericCallback<PictureTakerParameters>() {
+            @Override
+            public void onCallback(PictureTakerParameters pictureTakerParameters) {
+                takePicture(pictureTakerParameters);
+            }
+        });
+    }
+
+    public void takePicture(PictureTakerParameters pictureTakerParameters) {
         final Camera mCamera=openCamera();
         if (mCamera!=null) {
             try {
                 mCamera.setPreviewTexture(new SurfaceTexture(10));
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                Log.e("PictureTaker","Error setting preview texture",e);
+            }
 
             final Camera.Parameters params = mCamera.getParameters();
             final Camera.Size biggestPictureSize = getBiggestPictureSize(params);
             params.setPictureSize(biggestPictureSize.width, biggestPictureSize.height);
             params.setPreviewSize(640,480);
 
-            PictureTakerParameters.retrieve(new GenericCallback<PictureTakerParameters>() {
-                @Override
-                public void onCallback(PictureTakerParameters pictureTakerParameters) {
-                    /*params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    params.setPictureFormat(ImageFormat.JPEG);
-                    params.setJpegQuality(80);
-                    //params.setAutoExposureLock(true);
-                    //params.setAutoWhiteBalanceLock(true);
-                    //params.setExposureCompensation(params.getMaxExposureCompensation()/4);
-                    params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_DAYLIGHT);
-                    params.setSceneMode(Camera.Parameters.SCENE_MODE_LANDSCAPE);
-                    params.setRotation(0);
-                    Log.i("Camera",params.flatten());*/
-                    try {
-                        pictureTakerParameters.apply(params);
-                        mCamera.setParameters(params);
-                        mCamera.startPreview(); //Commenting works in the emulator, not in actual phone
+            try {
+                pictureTakerParameters.apply(params);
+                mCamera.setParameters(params);
+                mCamera.startPreview(); //Commenting works in the emulator, not in actual phone
 
-                        mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
-                            @Override
-                            public void onPictureTaken(byte[] data, Camera camera) {
-                                //mCamera.stopPreview();
-                                disposeCamera();
+                mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] data, Camera camera) {
+                        //mCamera.stopPreview();
+                        disposeCamera();
 
-                                File imageFile = getNewImageFile();
-                                try {
-                                    OutputStream out = new FileOutputStream(imageFile);
-                                    out.write(data);
-                                    out.close();
+                        File imageFile = getNewImageFile();
+                        try {
+                            OutputStream out = new FileOutputStream(imageFile);
+                            out.write(data);
+                            out.close();
 
-                                    setChanged();
-                                    notifyObservers(imageFile);
-                                } catch (Exception e) { }
-                            }
-                        });
-                    } catch(Exception e) {
-                        Log.e("PictureTaker",e.getMessage());
+                            setChanged();
+                            notifyObservers(imageFile);
+                        } catch (Exception e) {
+                            Log.e("PictureTaker","Error writing picture file",e);
+                        }
                     }
-                }
-            });
+                });
+            } catch(Exception e) {
+                Log.e("PictureTaker","Error setting parameters",e);
+            }
         }
     }
 
-    private DateFormat imageDateFormat = new SimpleDateFormat("yyyy.MM.dd-HHmmss");
-    public File getNewImageFile() {
-        String imageFolderPath = Environment.getExternalStorageDirectory().toString()+"/Timelapse";
-        File imagesFolder = new File(imageFolderPath);
-        imagesFolder.mkdirs();
+    private DateFormat imageDateFormat = new SimpleDateFormat("yyyy-MM-dd.HHmmss", Locale.US);
+    private File getNewImageFile() {
+        File imagesFolder = getImageFolder();
 
         // Generating file name
         String imageName = imageDateFormat.format(new Date())+".jpg";
-        return new File(imageFolderPath, imageName);
+        return new File(imagesFolder.getPath(), imageName);
+    }
+
+    public static int cleanupPictures() {
+        return FileUtils.remoteOldFiles(getImageFolder(),new Date().getTime()-30*24*60*60*1000);
+    }
+
+    private static File getImageFolder() {
+        String imageFolderPath = Environment.getExternalStorageDirectory().toString()+"/Timelapse/";
+        File imagesFolder = new File(imageFolderPath);
+        imagesFolder.mkdirs();
+
+        return imagesFolder;
     }
 
 

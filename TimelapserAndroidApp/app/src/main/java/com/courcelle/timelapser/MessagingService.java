@@ -1,27 +1,19 @@
 package com.courcelle.timelapser;
 
-import android.content.Intent;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.support.v4.content.LocalBroadcastManager;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import java.io.File;
+
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 public class MessagingService extends FirebaseMessagingService {
-    private LocalBroadcastManager broadcaster;
     private PictureTaker pictureTaker;
 
     public MessagingService() { }
 
     @Override
     public void onCreate() {
-        broadcaster = LocalBroadcastManager.getInstance(this);
-
-        pictureTaker=new PictureTaker();
+        pictureTaker = new PictureTaker();
         pictureTaker.addObserver(new PictureTakerObserver(this));
     }
 
@@ -31,7 +23,10 @@ public class MessagingService extends FirebaseMessagingService {
         if (data!=null) {
             switch(data.get("action")) {
                 case "TakePicture":
-                    takePicture(data);
+                    pictureTaker.takePicture();
+                    break;
+                case "CleanupPictures":
+                    PictureTaker.cleanupPictures();
                     break;
             }
         }
@@ -56,9 +51,15 @@ public class MessagingService extends FirebaseMessagingService {
         // message, here is where that should be initiated. See sendNotification method below.
     }
 
-    private void takePicture( Map<String,String> data) {
-        String cameraParameters=data.get("cameraParameters");
+    public static void subscribeRelevantTopics() {
+        for(String relevantTopic: getRelevantTopics()) {
+            FirebaseMessaging.getInstance().subscribeToTopic(relevantTopic);
+        }
+    }
+    public static String[] getRelevantTopics() {
+        String[] relevantTopics=new String[1];
+        relevantTopics[0]="PictureTaker";
 
-        pictureTaker.takePicture();
+        return relevantTopics;
     }
 }

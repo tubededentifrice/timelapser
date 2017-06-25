@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,16 +81,10 @@ public class MainActivity extends Activity implements Observer {
         pictureTaker.addObserver(this);
         this.counterTextView=(TextView)findViewById(R.id.counter);
 
-//        Intent intent=new Intent(this,BackgroundService.class);
-//        intent.setAction("PictureTaker");
-//        startService(intent);
-        JobScheduler mJobScheduler = (JobScheduler)getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        JobInfo.Builder builder = new JobInfo.Builder(1,new ComponentName(getPackageName(),TakePictureJobService.class.getName()))
-                .setPeriodic(60*60*1000)
-                .setPersisted(true);
-        if(mJobScheduler.schedule(builder.build())<=0) {
-            Toast.makeText(this, "Failed to register the schedule job", Toast.LENGTH_LONG).show();
-        }
+        TakePictureJobService.scheduleJob(this,true);
+        CleanupPicturesJobService.scheduleJob(this);
+
+        MessagingService.subscribeRelevantTopics();
     }
 
     public void onClickForceTakePicture(View view) {
