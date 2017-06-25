@@ -2,32 +2,15 @@ package com.courcelle.timelapser;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.util.Log;
-
-import com.courcelle.timelapser.utils.FileUtils;
-import com.courcelle.timelapser.utils.GenericCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Observable;
 
-public class PictureTaker extends Observable {
-    public void takePicture() {
-        PictureTakerParameters.retrieve(new GenericCallback<PictureTakerParameters>() {
-            @Override
-            public void onCallback(PictureTakerParameters pictureTakerParameters) {
-                takePicture(pictureTakerParameters);
-            }
-        });
-    }
-
+public class PictureTaker extends APictureTaker {
+    @Override
     public void takePicture(PictureTakerParameters pictureTakerParameters) {
         final Camera mCamera=openCamera();
         if (mCamera!=null) {
@@ -53,44 +36,13 @@ public class PictureTaker extends Observable {
                         //mCamera.stopPreview();
                         disposeCamera();
 
-                        File imageFile = getNewImageFile();
-                        try {
-                            OutputStream out = new FileOutputStream(imageFile);
-                            out.write(data);
-                            out.close();
-
-                            setChanged();
-                            notifyObservers(imageFile);
-                        } catch (Exception e) {
-                            Log.e("PictureTaker","Error writing picture file",e);
-                        }
+                        savePictureAndNotifyObservers(data);
                     }
                 });
             } catch(Exception e) {
                 Log.e("PictureTaker","Error setting parameters",e);
             }
         }
-    }
-
-    private DateFormat imageDateFormat = new SimpleDateFormat("yyyy-MM-dd.HHmmss", Locale.US);
-    private File getNewImageFile() {
-        File imagesFolder = getImageFolder();
-
-        // Generating file name
-        String imageName = imageDateFormat.format(new Date())+".jpg";
-        return new File(imagesFolder.getPath(), imageName);
-    }
-
-    public static int cleanupPictures() {
-        return FileUtils.remoteOldFiles(getImageFolder(),new Date().getTime()-30*24*60*60*1000);
-    }
-
-    private static File getImageFolder() {
-        String imageFolderPath = Environment.getExternalStorageDirectory().toString()+"/Timelapse/";
-        File imagesFolder = new File(imageFolderPath);
-        imagesFolder.mkdirs();
-
-        return imagesFolder;
     }
 
 
@@ -131,7 +83,7 @@ public class PictureTaker extends Observable {
                     lastCamera=cam;
                     return cam;
                 } catch (RuntimeException e) {
-                    Log.e("Camera","Camera failed to open: " + e.getLocalizedMessage());
+                    Log.e("Camera","Camera failed to open: " + e.getLocalizedMessage(),e);
                 }
             }
         }

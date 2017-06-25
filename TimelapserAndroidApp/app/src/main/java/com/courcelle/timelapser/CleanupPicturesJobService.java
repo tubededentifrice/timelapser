@@ -10,7 +10,7 @@ import android.content.Context;
 public class CleanupPicturesJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        PictureTaker.cleanupPictures();
+        APictureTaker.cleanupPictures();
         return false;
     }
 

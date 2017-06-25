@@ -50,7 +50,7 @@ public class TakePictureJobService extends JobService {
                 } catch(Exception e) { }
 
 
-                PictureTaker pictureTaker=new PictureTaker();
+                APictureTaker pictureTaker = APictureTaker.getInstance(TakePictureJobService.this);
                 pictureTaker.addObserver(new PictureTakerObserver(TakePictureJobService.this));
 
                 pictureTaker.addObserver(new Observer() {

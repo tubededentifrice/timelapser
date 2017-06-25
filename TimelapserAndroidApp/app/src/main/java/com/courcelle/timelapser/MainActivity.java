@@ -33,7 +33,7 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends Activity implements Observer {
     public final static String PictureTakenIntentAction="PictureTaken";
 
-    private PictureTaker pictureTaker;
+    private APictureTaker pictureTaker;
     private TextView counterTextView;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -77,7 +77,7 @@ public class MainActivity extends Activity implements Observer {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
 
-        pictureTaker=new PictureTaker();
+        pictureTaker = APictureTaker.getInstance(this);
         pictureTaker.addObserver(this);
         this.counterTextView=(TextView)findViewById(R.id.counter);
 
