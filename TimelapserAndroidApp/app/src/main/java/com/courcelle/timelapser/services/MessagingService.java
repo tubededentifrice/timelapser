@@ -1,5 +1,7 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.services;
 
+import com.courcelle.timelapser.picturetaker.APictureTaker;
+import com.courcelle.timelapser.picturetaker.PictureTakerObserver;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

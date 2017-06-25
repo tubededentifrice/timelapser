@@ -1,4 +1,4 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.picturetaker;
 
 import android.hardware.Camera;
 import android.hardware.camera2.CaptureRequest;

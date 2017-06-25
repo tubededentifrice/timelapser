@@ -2,10 +2,7 @@ package com.courcelle.timelapser;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,8 +16,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.courcelle.timelapser.picturetaker.APictureTaker;
+import com.courcelle.timelapser.services.CleanupPicturesJobService;
+import com.courcelle.timelapser.services.MessagingService;
+import com.courcelle.timelapser.services.TakePictureJobService;
 import com.crashlytics.android.Crashlytics;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
 import java.util.ArrayList;

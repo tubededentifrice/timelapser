@@ -23,20 +23,20 @@
         </activity>
         <meta-data android:name="io.fabric.ApiKey" android:value="8b306496ec1a3ad40291d54361fd56e73b1b40e1" />
 
-        <receiver android:name=".BootInitializer">
+        <receiver android:name=".services.BootInitializer">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".TakePictureJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
-        <service android:name=".CleanupPicturesJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
-        <service android:name=".FirebaseInstanceService">
+        <service android:name=".services.TakePictureJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+        <service android:name=".services.CleanupPicturesJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+        <service android:name=".services.FirebaseInstanceService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MessagingService">
+        <service android:name=".services.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

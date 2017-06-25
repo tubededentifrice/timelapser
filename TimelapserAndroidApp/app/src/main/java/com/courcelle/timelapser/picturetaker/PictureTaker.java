@@ -1,13 +1,10 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.picturetaker;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class PictureTaker extends APictureTaker {
     @Override

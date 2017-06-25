@@ -1,4 +1,4 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.picturetaker;
 
 import android.content.Context;
 import android.graphics.ImageFormat;

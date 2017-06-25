@@ -1,4 +1,4 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.picturetaker;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.courcelle.timelapser.MainActivity;
 
 import java.io.File;
 import java.util.Observable;

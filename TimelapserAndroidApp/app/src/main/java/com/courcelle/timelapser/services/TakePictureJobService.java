@@ -1,4 +1,4 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.services;
 
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
@@ -8,6 +8,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.courcelle.timelapser.picturetaker.APictureTaker;
+import com.courcelle.timelapser.picturetaker.PictureTakerObserver;
 import com.courcelle.timelapser.utils.GenericCallback;
 import com.courcelle.timelapser.utils.RemoteConfigHelper;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;

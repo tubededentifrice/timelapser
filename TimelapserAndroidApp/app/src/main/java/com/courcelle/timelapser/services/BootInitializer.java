@@ -1,4 +1,4 @@
-package com.courcelle.timelapser;
+package com.courcelle.timelapser.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
