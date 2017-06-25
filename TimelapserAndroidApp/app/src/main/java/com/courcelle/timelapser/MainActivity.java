@@ -118,18 +118,6 @@ public class MainActivity extends Activity implements Observer {
         if (arg!=null) {
             File imageFile=(File)arg;
 
-            MediaScannerConnection.scanFile(
-                this,
-                new String[] { imageFile.getPath() },
-                new String[] { "image/jpeg" },
-                null
-            );
-            sendBroadcast(
-                new Intent(
-                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                    Uri.fromFile(imageFile)
-                )
-            );
             Toast.makeText(this, "Picture "+imageFile.getName()+" taken, size "+imageFile.length(), Toast.LENGTH_LONG).show();
         }
     }
