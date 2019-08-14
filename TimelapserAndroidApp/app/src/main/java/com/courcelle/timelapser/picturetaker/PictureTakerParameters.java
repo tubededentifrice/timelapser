@@ -9,6 +9,9 @@ import com.courcelle.timelapser.utils.RemoteConfigHelper;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class PictureTakerParameters {
+    public Integer controlMode;
+    public Integer controlAutoExposureMode;
+
     public String flashMode;
     public String whiteBalance;
     public String sceneMode;
@@ -31,6 +34,9 @@ public class PictureTakerParameters {
             @Override
             public void onCallback(FirebaseRemoteConfig remoteConfig) {
                 PictureTakerParameters parameters=new PictureTakerParameters();
+
+                parameters.controlMode = RemoteConfigHelper.getInteger(remoteConfig,namespaceDot+"controlMode",null); // Not in API1 ?????
+                parameters.controlAutoExposureMode = RemoteConfigHelper.getInteger(remoteConfig,namespaceDot+"controlAutoExposureMode",null); // Not in API1 ?????
 
                 parameters.flashMode = RemoteConfigHelper.getString(remoteConfig,namespaceDot+"flashMode",null);
                 parameters.whiteBalance = RemoteConfigHelper.getString(remoteConfig,namespaceDot+"whiteBalance",null);
@@ -104,12 +110,22 @@ public class PictureTakerParameters {
         }
     }
     public void apply(CaptureRequest.Builder params) {
+        //Log.i("Params","CONTROL_MODE_AUTO = "+CaptureRequest.CONTROL_MODE_AUTO);
+        if (controlMode!=null) {
+            params.set(CaptureRequest.CONTROL_MODE,controlMode);
+        }
+
+        //Log.i("Params","CONTROL_AE_MODE_ON = "+CaptureRequest.CONTROL_AE_MODE_ON);
+        if (controlAutoExposureMode!=null) {
+            params.set(CaptureRequest.CONTROL_AE_MODE,controlAutoExposureMode);
+        }
+
         //Log.i("Params","FLASH_MODE_OFF = "+CaptureRequest.FLASH_MODE_OFF);
         if (flashMode!=null) {
             params.set(CaptureRequest.FLASH_MODE,Integer.parseInt(flashMode));
         }
 
-        Log.i("Params","CONTROL_AWB_MODE_AUTO = "+CaptureRequest.CONTROL_AWB_MODE_AUTO);
+        //Log.i("Params","CONTROL_AWB_MODE_AUTO = "+CaptureRequest.CONTROL_AWB_MODE_AUTO);
         //Log.i("Params","CONTROL_AWB_MODE_AUTO = "+CaptureRequest.CONTROL_AWB_MODE_CLOUDY_DAYLIGHT);
         if (whiteBalance!=null) {
             params.set(CaptureRequest.CONTROL_AWB_MODE,Integer.parseInt(whiteBalance));
@@ -132,7 +148,7 @@ public class PictureTakerParameters {
         }
 
         if (exposureTime!=null) {
-            params.set(CaptureRequest.SENSOR_EXPOSURE_TIME,new Long(exposureTime));
+            params.set(CaptureRequest.SENSOR_EXPOSURE_TIME,Long.valueOf(exposureTime));
         }
 
         if (isoSpeed!=null) {
@@ -140,7 +156,7 @@ public class PictureTakerParameters {
         }
 
         if (frameDuration!=null) {
-            params.set(CaptureRequest.SENSOR_FRAME_DURATION,new Long(frameDuration));
+            params.set(CaptureRequest.SENSOR_FRAME_DURATION,Long.valueOf(frameDuration));
         }
 
         if (autoExposureLock!=null) {

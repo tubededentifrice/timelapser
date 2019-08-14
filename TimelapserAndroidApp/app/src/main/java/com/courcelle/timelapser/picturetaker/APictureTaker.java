@@ -28,7 +28,7 @@ public abstract class APictureTaker extends Observable {
         PictureTakerParameters.retrieve(new GenericCallback<PictureTakerParameters>() {
             @Override
             public void onCallback(PictureTakerParameters pictureTakerParameters) {
-                takePicture(pictureTakerParameters);
+            takePicture(pictureTakerParameters);
             }
         },"camera2");
     }

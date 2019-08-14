@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.courcelle.timelapser.picturetaker.APictureTaker;
+import com.courcelle.timelapser.picturetaker.PictureTakerObserver;
 import com.courcelle.timelapser.services.CleanupPicturesJobService;
 import com.courcelle.timelapser.services.MessagingService;
 import com.courcelle.timelapser.services.TakePictureJobService;
@@ -79,7 +80,7 @@ public class MainActivity extends Activity implements Observer {
         });
 
         pictureTaker = APictureTaker.getInstance(this);
-        pictureTaker.addObserver(this);
+        pictureTaker.addObserver(new PictureTakerObserver(this));
         this.counterTextView=(TextView)findViewById(R.id.counter);
 
         TakePictureJobService.scheduleJob(this,true);
